@@ -26,25 +26,33 @@ This repository implements the original NST paper by [Gatys et al (2015)](https:
 The goal is we want the generated image (G) to look like the content image (C). So a particular hidden layer's activation output is chosen to represent the "Content" of an image. 
 
 Steps to compute Content Cost:
-1. Input C to the VGG-19 model, forward-propagate and get the content activation on layer $l$, $a^{(C)}$
-2. Input G to the VGG-19 model, forward-propagate and get the content activation on layer $l$, $a^{(G)}$
+1. Input C to the VGG-19 model, forward-propagate and get the content activation on layer ***l, a(C)***
+2. Input G to the VGG-19 model, forward-propagate and get the content activation on layer ***l, a(G)***
 3. Compute content cost using 
 
-$$J_{content}(C,G) =  \frac{1}{4 \times n_H \times n_W \times n_C}\sum _{ \text{all entries}} (a^{(C)} - a^{(G)})^2\tag{1} $$
+<center>
+<figure>
+    <img src="images/content_cost.png"/>
+</figure>
+</center>
 
-Where  $n_H$ -  height , $n_W$ - Width and $n_C$ - number of channels in the chosen hidden layer , $l$
+Where  ***n_H*** -  height , ***n_W*** - Width and ***n_C*** - number of channels in the chosen hidden layer , ***l***
 
-### How to select layer $l$ for computing the cost ?
+### How to select layer ***l*** for computing the cost ?
 
-Eventhough $G$ is initialized with a noise image ($N$) in the beginning, usually it is also set to resemble a percentage of $C$ (Weighted average). A $Noise Ratio = 0.6$ is a good starting point
+Eventhough G is initialized with a noise image (N) in the beginning, usually it is also set to resemble a percentage of C (Weighted average). ***A Noise Ratio = 0.6*** is a good starting point
 
-$$ G =  N \times Noise Ratio  +  C \times (1 - Noise Ratio)$$
+<center>
+<figure>
+    <img src="images/generated_image.png"/>
+</figure>
+</center>
 
-* when $l$ is selected from shallow layers, $G$ will resemble $C$ too much
-* when $l$ is selected from very deep layers, $G$ wil hardly have resemblance to $C$
-* for "visually pleasing" results, $l$ is chosen somewhere in the **middle** layers of the model to have the right blend of $C$ in $G$
+* when ***l*** is selected from shallow layers, G will resemble C too much
+* when ***l*** is selected from very deep layers, G wil hardly have resemblance to C
+* for "visually pleasing" results, ***l*** is chosen somewhere in the **middle** layers of the model to have the right blend of C in G
 
-Here, the activations from hidden layer conv4_2 are selected for comparing $C$ with $G$
+Here, the activations from hidden layer ***conv4_2*** are selected for comparing C with G
 
 <center>
 <figure>
@@ -58,29 +66,40 @@ Here, the activations from hidden layer conv4_2 are selected for comparing $C$ w
 
 Style of an image is defined by how correlated are the activations between different layers of an image. The degree of correlation between features in a layer measures how similar or different their styles are. 
 
-A **"Gram Matrix"**, also called a **Style Matrix**, computes the correlation of features in an activation and is given by $G_A = AA^T$. 
+A **"Gram Matrix"**, also called a **Style Matrix**, computes the correlation of features in an activation and is given by ***G_A = A A^T***. 
 
 
 Steps to compute the Style Cost:
-1. Get $a^{(S)}$ on layer $l$ and compute Gram matrix for Style image $Gram_S$
-2. Get $a^{(G)}$ on layer $l$ and compute Gram matrix for Generated image $Gram_G$
-3. the style cost for layer $l$ is defined to be the distance between the Gram matrices
+1. Get ***a(S)*** on layer ***l*** and compute Gram matrix for Style image ***Gram_S***
+2. Get ***a(G)*** on layer ***l*** and compute Gram matrix for Generated image ***Gram_G***
+3. the style cost for layer ***l*** is defined to be the distance between the Gram matrices
 
-$$J_{style}^{[l]}(S,G) = \frac{1}{4 \times {n_C}^2 \times (n_H \times n_W)^2} \sum _{i=1}^{n_C}\sum_{j=1}^{n_C}(Gram_{(S)i,j} - Gram_{(G)i,j})^2\tag{2} $$
+<center>
+<figure>
+    <img src="images/style_cost.png"/>
+</figure>
+</center>
 
 4. Aggregate style cost over multiple layers
 
-	Instead of comparing style from just one layer, using multiple layers will capture style from shallow layers (detailed features) as well as deeper layers (high level features). Each layer's contribution can be weighted by a factor $\lambda^{[l]}$
+	Instead of comparing style from just one layer, using multiple layers will capture style from shallow layers (detailed features) as well as deeper layers (high level features). Each layer's contribution can be weighted by a factor lambda
 
-$$J_{style}(S,G) = \sum_{l} \lambda^{[l]} J^{[l]}_{style}(S,G)$$
+<center>
+<figure>
+    <img src="images/style_cost_aggregated.png"/>
+</figure>
+</center>
 
 
 # Total Cost 
 
 The total cost function combines both the Content cost as well as the Style cost functions
 
-
-$$J(G) = \alpha J_{content}(C,G) + \beta J_{style}(S,G)$$
+<center>
+<figure>
+    <img src="images/total_cost.png"/>
+</figure>
+</center>
 
 
 # examples of different combinations
@@ -95,11 +114,4 @@ $$J(G) = \alpha J_{content}(C,G) + \beta J_{style}(S,G)$$
 
 Pretrained model VGG Network
 http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat
-
-
-
-## Useful links: 
-
-* only my reference*
-https://github.com/anishathalye/neural-style/tree/75188f06cac8140143ee32c35d68e1484d5f6687 
 
