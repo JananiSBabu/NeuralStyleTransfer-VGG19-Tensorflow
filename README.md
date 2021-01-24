@@ -11,7 +11,17 @@ This repository implements the original NST paper by [Gatys et al (2015)](https:
 
 # Steps of algorithm
 
-# Content cost 
+1. Create an Interactive Session
+2. Initializations
+	a. Select Content image
+	b. Select Style image
+	c. Initialize Generated image = Noise + Content image
+3. Load the pre-trained VGG-19 model
+4. Build the tensorflow graph
+	a. B
+5. 
+
+# Content Cost 
 
 The goal is we want the generated image (G) to look like the content image (C). So a particular hidden layer's activation output is chosen to represent the "Content" of an image. 
 
@@ -39,13 +49,39 @@ Here, the activations from hidden layer conv4_2 are selected for comparing $C$ w
 <center>
 <figure>
     <img src="images/vgg19.png" style="width:450px;height:250px;"/>
-    <figcaption>[VGG-19]https://miro.medium.com/max/2408/1*6U9FJ_se7SIuFKJRyPMHuA.png)</figcaption>
+    <figcaption><a href="https://miro.medium.com/max/2408/1*6U9FJ_se7SIuFKJRyPMHuA.png">VGG-19</a></figcaption>
 </figure>
 </center>
 
 
+# Style Cost 
 
-# Style cost 
+Style of an image is defined by how correlated are the activations between different layers of an image. The degree of correlation between features in a layer measures how similar or different their styles are. 
+
+A **"Gram Matrix"**, also called a **Style Matrix**, computes the correlation of features in an activation and is given by $G_A = AA^T$. 
+
+
+Steps to compute the Style Cost:
+1. Get $a^{(S)}$ on layer $l$ and compute Gram matrix for Style image $Gram_S$
+2. Get $a^{(G)}$ on layer $l$ and compute Gram matrix for Generated image $Gram_G$
+3. the style cost for layer $l$ is defined to be the distance between the Gram matrices
+
+$$J_{style}^{[l]}(S,G) = \frac{1}{4 \times {n_C}^2 \times (n_H \times n_W)^2} \sum _{i=1}^{n_C}\sum_{j=1}^{n_C}(Gram_{(S)i,j} - Gram_{(G)i,j})^2\tag{2} $$
+
+4. Aggregate style cost over multiple layers
+
+	Instead of comparing style from just one layer, using multiple layers will capture style from shallow layers (detailed features) as well as deeper layers (high level features). Each layer's contribution can be weighted by a factor $\lambda^{[l]}$
+
+$$J_{style}(S,G) = \sum_{l} \lambda^{[l]} J^{[l]}_{style}(S,G)$$
+
+
+# Total Cost 
+
+The total cost function combines both the Content cost as well as the Style cost functions
+
+
+$$J(G) = \alpha J_{content}(C,G) + \beta J_{style}(S,G)$$
+
 
 # examples of different combinations
 
