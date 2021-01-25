@@ -91,9 +91,13 @@ sess.run(model['input'].assign(style_image))
 J_style = compute_style_cost(model, STYLE_LAYERS, sess)
 
 # Compute the total cost
-J = total_cost(J_content, J_style, alpha=alpha, beta=beta)
+J_total = total_cost(J_content, J_style, alpha=alpha, beta=beta)
 
-# define optimizer (Adam with LR=2.0)
+# Compute the total variation lost - to get smoother results
+total_variation_weight = 2.0
+J = J_total + total_variation_weight * tf.image.total_variation(a_G)
+
+# define optimizer (Adam)
 optimizer = tf.train.AdamOptimizer(learning_rate)
 
 # define train_step
