@@ -3,7 +3,21 @@
 
 Neural Style transfer is a techniques that uses deep learning to generate a new image that merges a content image (C) and a Style image(S)
 
-<Insert a pic  C+ S = G>
+<center>
+<figure>
+    <img src="images/nst_example.png"/>
+</figure>
+</center>
+
+Here is the animation of the generated image getting updated through the iterations 
+
+<center>
+<video controls preload autoplay loop>
+	<source src="images/G_video.mp4" type="video/mp4" />
+	Your browser does not support the video tag.
+</video>
+</center>
+
 
 This uses the concept of "Transfer learning" where a deep neural network trained for a different application can be used as a base network for traning a new application. The rationale is that a  pre-trained model on a very large dataset like ImageNet would have already learnt the high level (objects, patterns) and low level (edges, corners, shades) features that are essential for detecting  various objects in the new task.
 
@@ -106,15 +120,15 @@ The total cost function combines both the Content cost as well as the Style cost
 </center>
 
 
-# examples of different combinations
-
-## Execution instructions:
+# Execution instructions:
 
 Download the pre-trained model VGG-19 from [here](http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat) and paste it under folder "pretrained-model".
 
-Basic usage - `python nst_main.py`.  
+You can use -h to display the help section of the application (example: python nst_main.py -h)
 
-Options parameters
+**Basic usage** - `python nst_main.py`.  
+
+**Options parameters**
 
 * To use your own images, (requirement: (WIDTH = 400, HEIGHT = 300) copy the content and style images in folder "images" and use them as 
 `python nst_main.py --content_image_filename louvre_small.jpg --style_image_filename style1.jpg`
