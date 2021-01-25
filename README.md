@@ -36,15 +36,15 @@ Here, the activations from hidden layer ***conv4_2*** are selected for comparing
 
 1. Create a tf Interactive Session
 2. Initializations
-	a. Select Content image
-	b. Select Style image
-	c. Initialize Generated image = Noise + Content image
+	2.1 Select Content image
+	2.2 Select Style image
+	2.3 Initialize Generated image = Noise + Content image
 3. Load the pre-trained VGG-19 model
 4. Build the Tensorflow graph
-	a. Compute content cost by passing C as input to the model
-	b. Compute style cost from all layers, by passing S as input to the model
-	c. Compute total cost
-	d. define optimizer and learning rate
+	4.1. Compute content cost by passing C as input to the model
+	4.2. Compute style cost from all layers, by passing S as input to the model
+	4.3. Compute total cost
+	4.4. define optimizer and learning rate
 5. Initialize the Tensorflow graph and update the Generated image for every epoch
 
 # Content Cost 
@@ -66,7 +66,6 @@ Where  ***n_H*** -  height , ***n_W*** - Width and ***n_C*** - number of channel
 
 
 
-
 # Style Cost 
 
 Style of an image is defined by how correlated are the activations between different layers of an image. The degree of correlation between features in a layer measures how similar or different their styles are. 
@@ -84,7 +83,6 @@ Steps to compute the Style Cost:
     <img src="images/style_cost.png"/>
 </figure>
 </center>
-
 
 4. Aggregate style cost over multiple layers
 
@@ -112,11 +110,28 @@ The total cost function combines both the Content cost as well as the Style cost
 
 ## Execution instructions:
 
-* Download the pre-trained model VGG-19 from [here](http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat) and paste it under folder "pretrained-model"
-* To use your own images, (requirement: (WIDTH = 300, HEIGHT = 225), change the CONFIG ...
-To set the content image
-* Intermediate output images are saved in folder "output"
+Download the pre-trained model VGG-19 from [here](http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat) and paste it under folder "pretrained-model".
 
+Basic usage - `python nst_main.py`.  
+
+Options parameters
+
+* To use your own images, (requirement: (WIDTH = 400, HEIGHT = 300) copy the content and style images in folder "images" and use them as 
+`python nst_main.py --content_image_filename louvre_small.jpg --style_image_filename style1.jpg`
+
+* To change the number of iterations:
+`python nst_main.py --epochs 200` 
+
+* To print cost and save generated images for every iteration:
+`python nst_main.py --print_every 20` 
+
+* to set the learning rate for optimizer
+`python nst_main.py --learning_rate 2.0` 
+
+* to set the weights for content cost (alpha) and style cost (beta)
+`python nst_main.py --alpha 10 --beta 40` 
+
+Intermediate output images are saved in "output" folder
 
 
 

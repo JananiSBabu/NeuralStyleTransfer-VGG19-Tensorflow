@@ -33,6 +33,10 @@ alpha = args["alpha"]
 beta = args["beta"]
 learning_rate = args["learning_rate"]
 
+print("\n\n\n================================================")
+print("content_image_filename : ", content_image_filename)
+
+print("style_image_filename : ", style_image_filename)
 # =========================================================
 
 
@@ -51,10 +55,10 @@ sess = tf.InteractiveSession()
 
 # Load the Content image
 content_image = scipy.misc.imread(content_image_filename)
-content_image = reshape_and_normalize_image(style_image_filename)
+content_image = reshape_and_normalize_image(content_image)
 
 # Load the Style Image
-style_image = scipy.misc.imread("images/monet.jpg")
+style_image = scipy.misc.imread(style_image_filename)
 style_image = reshape_and_normalize_image(style_image)
 
 # Initialize Generated image with Noise and a small correlation with Content image
