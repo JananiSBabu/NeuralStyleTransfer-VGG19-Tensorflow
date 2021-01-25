@@ -50,15 +50,15 @@ Here, the activations from hidden layer ***conv4_2*** are selected for comparing
 
 1. Create a tf Interactive Session
 2. Initializations
-	2.1 Select Content image
-	2.2 Select Style image
-	2.3 Initialize Generated image = Noise + Content image
+2.1 Select Content image
+2.2 Select Style image
+2.3 Initialize Generated image = Noise + Content image
 3. Load the pre-trained VGG-19 model
 4. Build the Tensorflow graph
-	4.1. Compute content cost by passing C as input to the model
-	4.2. Compute style cost from all layers, by passing S as input to the model
-	4.3. Compute total cost
-	4.4. define optimizer and learning rate
+4.1. Compute content cost by passing C as input to the model
+4.2. Compute style cost from all layers, by passing S as input to the model
+4.3. Compute total cost
+4.4. define optimizer and learning rate
 5. Initialize the Tensorflow graph and update the Generated image for every epoch
 
 # Content Cost 

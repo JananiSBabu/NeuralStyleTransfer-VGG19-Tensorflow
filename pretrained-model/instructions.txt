@@ -1,0 +1,5 @@
+
+
+The pretrained model that can be downloaded at the following link: http://www.vlfeat.org/matconvnet/pretrained/. The pretrained model's parameters are due to the MatConvNet Team. 
+
+ddownload the pre-trained model and place it in this folder
