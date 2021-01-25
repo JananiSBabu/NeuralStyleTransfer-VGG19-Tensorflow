@@ -9,35 +9,6 @@ This uses the concept of "Transfer learning" where a deep neural network trained
 
 This repository implements the original NST paper by [Gatys et al (2015)](https://arxiv.org/abs/1508.06576). Here we will use VGG-19 pre-trained network for this task. 
 
-# Steps of algorithm
-
-1. Create an Interactive Session
-2. Initializations
-	a. Select Content image
-	b. Select Style image
-	c. Initialize Generated image = Noise + Content image
-3. Load the pre-trained VGG-19 model
-4. Build the tensorflow graph
-	a. B
-5. 
-
-# Content Cost 
-
-The goal is we want the generated image (G) to look like the content image (C). So a particular hidden layer's activation output is chosen to represent the "Content" of an image. 
-
-Steps to compute Content Cost:
-1. Input C to the VGG-19 model, forward-propagate and get the content activation on layer ***l, a(C)***
-2. Input G to the VGG-19 model, forward-propagate and get the content activation on layer ***l, a(G)***
-3. Compute content cost using 
-
-<center>
-<figure>
-    <img src="images/content_cost.png"/>
-</figure>
-</center>
-
-Where  ***n_H*** -  height , ***n_W*** - Width and ***n_C*** - number of channels in the chosen hidden layer , ***l***
-
 ### How to select layer ***l*** for computing the cost ?
 
 Eventhough G is initialized with a noise image (N) in the beginning, usually it is also set to resemble a percentage of C (Weighted average). ***A Noise Ratio = 0.6*** is a good starting point
@@ -56,10 +27,44 @@ Here, the activations from hidden layer ***conv4_2*** are selected for comparing
 
 <center>
 <figure>
-    <img src="images/vgg19.png" style="width:450px;height:250px;"/>
+    <img src="images/vgg19.png" style="width:850px;height:400px;"/>
     <figcaption><a href="https://miro.medium.com/max/2408/1*6U9FJ_se7SIuFKJRyPMHuA.png">VGG-19</a></figcaption>
 </figure>
 </center>
+
+# NST Algorithm 
+
+1. Create a tf Interactive Session
+2. Initializations
+	a. Select Content image
+	b. Select Style image
+	c. Initialize Generated image = Noise + Content image
+3. Load the pre-trained VGG-19 model
+4. Build the Tensorflow graph
+	a. Compute content cost by passing C as input to the model
+	b. Compute style cost from all layers, by passing S as input to the model
+	c. Compute total cost
+	d. define optimizer and learning rate
+5. Initialize the Tensorflow graph and update the Generated image for every epoch
+
+# Content Cost 
+
+The goal is we want the generated image (G) to look like the content image (C). So a particular hidden layer's activation output is chosen to represent the "Content" of an image. 
+
+Steps to compute Content Cost:
+1. Input C to the VGG-19 model, forward-propagate and get the content activation on layer ***l, a(C)***
+2. Input G to the VGG-19 model, forward-propagate and get the content activation on layer ***l, a(G)***
+3. Compute content cost using 
+
+<center>
+<figure>
+    <img src="images/content_cost.png"/>
+</figure>
+</center>
+
+Where  ***n_H*** -  height , ***n_W*** - Width and ***n_C*** - number of channels in the chosen hidden layer , ***l***
+
+
 
 
 # Style Cost 
@@ -79,6 +84,7 @@ Steps to compute the Style Cost:
     <img src="images/style_cost.png"/>
 </figure>
 </center>
+
 
 4. Aggregate style cost over multiple layers
 
@@ -104,14 +110,24 @@ The total cost function combines both the Content cost as well as the Style cost
 
 # examples of different combinations
 
+## Execution instructions:
+
+* Download the pre-trained model VGG-19 from [here](http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat) and paste it under folder "pretrained-model"
+* To use your own images, (requirement: (WIDTH = 300, HEIGHT = 225), change the CONFIG ...
+To set the content image
+* Intermediate output images are saved in folder "output"
 
 
 
-## References
 
+### References:
 
-## Dependencies
+The Neural Style Transfer algorithm was due to Gatys et al. (2015). Harish Narayanan and Github user "log0" also have highly readable write-ups from which we drew inspiration. The pre-trained network used in this implementation is a VGG network, which is due to Simonyan and Zisserman (2015). Pre-trained weights were from the work of the MathConvNet team. 
 
-Pretrained model VGG Network
-http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat
+- Leon A. Gatys, Alexander S. Ecker, Matthias Bethge, (2015). [A Neural Algorithm of Artistic Style](https://arxiv.org/abs/1508.06576) 
+- Harish Narayanan, [Convolutional neural networks for artistic style transfer.](https://harishnarayanan.org/writing/artistic-style-transfer/)
+- Log0, [TensorFlow Implementation of "A Neural Algorithm of Artistic Style".](http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style)
+- Karen Simonyan and Andrew Zisserman (2015). [Very deep convolutional networks for large-scale image recognition](https://arxiv.org/pdf/1409.1556.pdf)
+- [MatConvNet.](http://www.vlfeat.org/matconvnet/pretrained/)
 
+This project was completed as part of "Convolutional Neural Networks" course by Coursera and deeplearning.ai (part of Deep Learning Specialization taught by Prof. Andrew Ng)

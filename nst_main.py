@@ -9,16 +9,32 @@ from nst_utils import *
 from nst_helpers import *
 import numpy as np
 import tensorflow as tf
-import pprint
+import argparse
 
-pp = pprint.PrettyPrinter(indent=4)
-model = load_vgg_model("pretrained-model/imagenet-vgg-verydeep-19.mat")
-pp.pprint(model)
+# =========================================================
+# Collect arguments from cmd line and parse them
+ap = argparse.ArgumentParser(description="Neural style transfer Application",
+                             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+ap.add_argument("--content_image_filename", help="Content image filename", default="louvre_small.jpg", type=str)
+ap.add_argument("--style_image_filename", help="Style image filename", default="monet.jpg", type=str)
+ap.add_argument("--epochs", help="Number of epochs for training", default=15, type=int)
+ap.add_argument("--print_every", help="Print cost/generated image every", default=20, type=int)
+ap.add_argument("--alpha", help="hyperparameter weighting the importance of the content cost", default=10, type=float)
+ap.add_argument("--beta", help="hyperparameter weighting the importance of the style cost", default=40, type=float)
+ap.add_argument("--learning_rate", help="Learning rate for optimizer", default=2.0, type=float)
+args = vars(ap.parse_args())
+
+# consume user inputs
+epochs = args["epochs"] # 200
+print_every = args["print_every"] # 20
+content_image_filename = "images/" + args["content_image_filename"]
+style_image_filename = "images/" + args["style_image_filename"]
+alpha = args["alpha"]
+beta = args["beta"]
+learning_rate = args["learning_rate"]
 
 # =========================================================
 
-epochs = 1 # 200
-print_every = 1 #20
 
 STYLE_LAYERS = [
     ('conv1_1', 0.2),
@@ -34,8 +50,8 @@ tf.reset_default_graph()
 sess = tf.InteractiveSession()
 
 # Load the Content image
-content_image = scipy.misc.imread("images/louvre_small.jpg")
-content_image = reshape_and_normalize_image(content_image)
+content_image = scipy.misc.imread(content_image_filename)
+content_image = reshape_and_normalize_image(style_image_filename)
 
 # Load the Style Image
 style_image = scipy.misc.imread("images/monet.jpg")
@@ -71,10 +87,10 @@ sess.run(model['input'].assign(style_image))
 J_style = compute_style_cost(model, STYLE_LAYERS, sess)
 
 # Compute the total cost
-J = total_cost(J_content, J_style, alpha = 10, beta = 40)
+J = total_cost(J_content, J_style, alpha=alpha, beta=beta)
 
 # define optimizer (Adam with LR=2.0)
-optimizer = tf.train.AdamOptimizer(2.0)
+optimizer = tf.train.AdamOptimizer(learning_rate)
 
 # define train_step
 train_step = optimizer.minimize(J)

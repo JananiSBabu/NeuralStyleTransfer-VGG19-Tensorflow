@@ -33,7 +33,6 @@ def compute_content_cost(a_C, a_G):
     # compute the cost with tensorflow
     J_content = (1 / (4 * n_H * n_W * n_C)) * tf.reduce_sum(tf.square(a_C_unrolled - a_G_unrolled))
 
-    print("dtype J_content: ", J_content.dtype)
     return J_content
 
 
@@ -68,23 +67,11 @@ def compute_layer_style_cost(a_S, a_G):
     a_S = tf.reshape(tf.transpose(a_S), shape=[n_C, n_H * n_W])
     a_G = tf.reshape(tf.transpose(a_G), shape=[n_C, n_H * n_W])
 
-    print("shape of a_s: ", a_S.get_shape().as_list())
-
     # Computing gram_matrices for both images S and G
     GS = gram_matrix(a_S)
     GG = gram_matrix(a_G)
 
-    print("shape of GS: ", GS.get_shape().as_list())
-
     # Computing the loss
-    temp = tf.reduce_sum(tf.square(GS - GG))
-    print("shape of temp: ", temp.get_shape().as_list())
-    print("dtype temp: ", temp.dtype)
-
-    con = (1 / (tf.square(2 * n_C * n_W * n_H)))
-    print("dtype con: ", con.dtype)
-
-    # J_style_layer = tf.cast(1/(4 *tf.square(n_C*n_W*n_H)), tf.float32) * tf.reduce_sum(tf.square(GS - GG))
     J_style_layer = (1 / (4 * n_C * n_C * n_H * n_H * n_W * n_W)) * tf.reduce_sum(tf.square(tf.subtract(GS, GG)))
 
     return J_style_layer
